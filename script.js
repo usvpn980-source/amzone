@@ -1,55 +1,55 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const paymentForm = document.getElementById('paymentForm');
-    const otpForm = document.getElementById('otpForm');
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-    const step3 = document.getElementById('step3');
-    const timerDisplay = document.getElementById('timer');
-    let timerInterval;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase SDKs (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Step 1: Payment / Phone Entry -->
+        <div id="step1" class="step active">
+            <h2>Payment Details</h2>
+            <form id="paymentForm">
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="+91 9876543210" required>
+                </div>
+                <div id="recaptcha-container"></div>
+                <button type="submit" class="btn">Send OTP</button>
+            </form>
+        </div>
 
-    // Handle Payment Form Submission
-    paymentForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        step1.classList.remove('active');
-        step2.classList.add('active');
-        startTimer();
-    });
+        <!-- Step 2: OTP Verification -->
+        <div id="step2" class="step">
+            <h2>Enter OTP</h2>
+            <p>Verification code sent to your phone</p>
+            <form id="otpForm">
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" pattern="\d" required>
+                    <input type="text" maxlength="1" pattern="\d" required>
+                    <input type="text" maxlength="1" pattern="\d" required>
+                    <input type="text" maxlength="1" pattern="\d" required>
+                    <input type="text" maxlength="1" pattern="\d" required>
+                    <input type="text" maxlength="1" pattern="\d" required>
+                </div>
+                <div id="timer" class="timer">Resend OTP in 30s</div>
+                <button type="submit" class="btn">Verify OTP</button>
+            </form>
+        </div>
 
-    // Handle OTP Form Submission
-    otpForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        clearInterval(timerInterval);
-        step2.classList.remove('active');
-        step3.classList.add('active');
-    });
+        <!-- Step 3: Success -->
+        <div id="step3" class="step">
+            <h2>Success!</h2>
+            <p>Your OTP has been verified successfully.</p>
+        </div>
+    </div>
 
-    // Timer Function
-    function startTimer() {
-        let timeLeft = 30;
-        timerDisplay.textContent = `Resend OTP in ${timeLeft}s`;
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                timerDisplay.innerHTML = '<a href="#" style="color: var(--primary-color);">Resend OTP</a>';
-            } else {
-                timerDisplay.textContent = `Resend OTP in ${timeLeft}s`;
-            }
-        }, 1000);
-    }
-
-    // Auto-focus next OTP box
-    const otpInputs = document.querySelectorAll('.otp-inputs input');
-    otpInputs.forEach((input, index) => {
-        input.addEventListener('input', (e) => {
-            if (e.target.value.length === 1 && index < otpInputs.length - 1) {
-                otpInputs[index + 1].focus();
-            }
-        });
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                otpInputs[index - 1].focus();
-            }
-        });
-    });
-});
+    <script src="script.js"></script>
+</body>
+</html>
