@@ -3,79 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pay with OTP</title>
-    <style>
-        :root {
-            --primary-color: #007bff;
-            --primary-hover: #0056b3;
-            --success-color: #28a745;
-            --text-color: #333;
-            --bg-color: #f4f4f4;
-            --card-bg: #fff;
-            --error-color: #dc3545;
-        }
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: var(--bg-color); margin: 0; }
-        .card { background-color: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 350px; text-align: center; }
-        h2 { margin-bottom: 10px; color: var(--text-color); }
-        p { color: #666; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--text-color); }
-        input[type="number"], input[type="tel"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; }
-        button:hover { background-color: var(--primary-hover); }
-        .step { display: none; }
-        .step.active { display: block; }
-        .otp-inputs { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
-        .otp-inputs input { width: 60px; height: 60px; text-align: center; font-size: 24px; border: 1px solid #ccc; border-radius: 6px; }
-        .timer { font-size: 14px; color: #888; margin-bottom: 15px; }
-        .success-icon { font-size: 50px; color: var(--success-color); margin-bottom: 15px; }
-    </style>
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase SDKs (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 <body>
+    <div class="container">
+        <!-- Step 1: Payment / Phone Entry -->
+        <div id="step1" class="step active">
+            <h2>Payment Details</h2>
+            <form id="paymentForm">
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="+91 9876543210" required>
+                </div>
+                <div id="recaptcha-container"></div>
+                <button type="submit" class="btn">Send OTP</button>
+            </form>
+        </div>
 
-<div class="card">
-    <!-- Step 1: Payment Input -->
-    <div id="step1" class="step active">
-        <h2>Secure Payment</h2>
-        <p>Enter the amount and mobile number.</p>
-        <form id="paymentForm">
-            <div class="form-group">
-                <label for="amount">Amount (₹)</label>
-                <input type="number" id="amount" placeholder="Enter amount" required>
-            </div>
-            <div class="form-group">
-                <label for="mobile">Mobile Number</label>
-                <input type="tel" id="mobile" placeholder="Mobile Number" required>
-            </div>
-            <button type="submit">Generate OTP</button>
-        </form>
+        <!-- Step 2: OTP Verification -->
+        <div id="step2" class="step">
+            <h2>Enter OTP</h2>
+            <p>Verification code sent to your phone</p>
+            <form id="otpForm">
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" pattern="\d" required>
+                    <input type="text" maxlength="1" pattern="\d" required>
+                    <input type="text" maxlength="1" pattern="\d" required>
+                    <input type="text" maxlength="1" pattern="\d" required>
+                    <input type="text" maxlength="1" pattern="\d" required>
+                    <input type="text" maxlength="1" pattern="\d" required>
+                </div>
+                <div id="timer" class="timer">Resend OTP in 30s</div>
+                <button type="submit" class="btn">Verify OTP</button>
+            </form>
+        </div>
+
+        <!-- Step 3: Success -->
+        <div id="step3" class="step">
+            <h2>Success!</h2>
+            <p>Your OTP has been verified successfully.</p>
+        </div>
     </div>
 
-    <!-- Step 2: OTP Verification -->
-    <div id="step2" class="step">
-        <h2>Verify OTP</h2>
-        <p>Enter the 4-digit OTP sent to your phone.</p>
-        <form id="otpForm">
-            <div class="otp-inputs">
-                <input type="text" maxlength="1" pattern="\d" required autofocus>
-                <input type="text" maxlength="1" pattern="\d" required>
-                <input type="text" maxlength="1" pattern="\d" required>
-                <input type="text" maxlength="1" pattern="\d" required>
-            </div>
-            <div class="timer" id="timer">Resend OTP in 30s</div>
-            <button type="submit">Pay Now</button>
-        </form>
-    </div>
-
-    <!-- Step 3: Success Screen -->
-    <div id="step3" class="step">
-        <div class="success-icon">✓</div>
-        <h2>Payment Successful!</h2>
-        <p>Your payment was processed successfully.</p>
-        <button onclick="location.reload()">Done</button>
-    </div>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
